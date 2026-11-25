@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Кнопка заботы ❤️</title>
+  
+  <!-- Мета-теги для iPhone, чтобы открывалось как настоящее приложение -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Для тебя ❤️">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 50%, #fec5bb 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 30px;
+      padding: 35px 25px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(255, 117, 143, 0.2), 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #590d22;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      color: #800f2f;
+      opacity: 0.8;
+      margin-bottom: 25px;
+    }
+
+    /* Кнопка-сердце */
+    .btn-container {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .magic-btn {
+      background: linear-gradient(135deg, #ff4d6d, #c9184a);
+      border: none;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      cursor: pointer;
+      box-shadow: 0 12px 25px rgba(201, 24, 74, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 46px;
+      margin: 0 auto;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: pulse 2.2s infinite;
+    }
+
+    .magic-btn:active {
+      transform: scale(0.92);
+      box-shadow: 0 6px 15px rgba(201, 24, 74, 0.5);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.6); }
+      70% { transform: scale(1.06); box-shadow: 0 0 0 18px rgba(255, 77, 109, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
+    }
+
+    /* Поле с сообщением */
+    .message-box {
+      min-height: 90px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      border: 1px dashed rgba(255, 77, 109, 0.3);
+    }
+
+    .message-text {
+      font-size: 16px;
+      color: #590d22;
+      line-height: 1.45;
+      font-weight: 500;
+      transition: opacity 0.25s ease;
+    }
+
+    .counter {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #a4133c;
+      font-weight: 600;
+    }
+
+    /* Летящие сердечки */
+    .heart-particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 100;
+      animation: floatUp 1.2s forwards ease-out;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.8) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.6) rotate(var(--rot));
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Твоя кнопочка от всех людишек 💖</h1>
+    <p class="subtitle">Нажимай, когда грустно или все бесят</p>
+
+    <div class="btn-container">
+      <button class="magic-btn" id="mainBtn">💌</button>
+    </div>
+
+    <div class="message-box">
+      <div class="message-text" id="msgText">Нажми на сердечко выше ✨</div>
+    </div>
+
+    <div class="counter" id="hugCounter">Крепких объятий отправлено: 0</div>
+  </div>
+
+  <script>
+    const messages = [
+      "Ты у меня самая самая лучшая и красивая ✨",
+      "Если день все бесят — нажимай дальше. Я рядом, и всё обязательно наладится ❤️",
+      "Ты сейчас сидишь и читаешь это, а я просто улыбаюсь, и думаю о тебе 🙈",
+      "Срочно напоминаю: я тебя обожаю и очень жду когда ты вечером выползешь!",
+      "Сделай чай, укутайся в плед, а все проблемы нахуй пойдут. Ты важнее всего ☕",
+      "Твоя улыбка — это рай для моих глаз. Улыбнись прямо сейчас! 🥺",
+      "Отправляю тебе миллион поцелуев и самое крепкое объятие 🫂",
+      "Не переживай по мелочам. Ты умница а я всегда буду рядом, пока кони не двину) ",
+      "Как домой придешь погладь Юку и успокойся) ",
+      "Я безумно дорожу тобой 💋",
+      "Вечером покатушки с Димой и Валей излечат плохой день",
+      "Вспомни тот день когда я тебя поцеловал в первый раз",
+      "Не приходи на новый год с недовольной моськой) ",
+      "Если люди бесят, вспомни, что у тебя есть твоя обезьянка) "
+    ];
+
+    let count = 0;
+    let currentIndex = 0;
+    let isRandomMode = false;
+    let lastRandomIdx = -1;
+
+    const btn = document.getElementById('mainBtn');
+    const textEl = document.getElementById('msgText');
+    const counterEl = document.getElementById('hugCounter');
+
+    btn.addEventListener('click', (e) => {
+      count++;
+      counterEl.textContent = `Крепких объятий отправлено: ${count}`;
+
+      let chosenText = "";
+
+      // Если первый круг еще не завершен — идем строго по порядку
+      if (!isRandomMode) {
+        chosenText = messages[currentIndex];
+        currentIndex++;
+        
+        // Когда дошли до конца списка — переключаем в случайный режим
+        if (currentIndex >= messages.length) {
+          isRandomMode = true;
+          lastRandomIdx = messages.length - 1;
+        }
+      } else {
+        // Случайный режим (без повтора подряд)
+        let randIdx;
+        do {
+          randIdx = Math.floor(Math.random() * messages.length);
+        } while (randIdx === lastRandomIdx && messages.length > 1);
+        
+        lastRandomIdx = randIdx;
+        chosenText = messages[randIdx];
+      }
+
+      // Плавная смена текста
+      textEl.style.opacity = '0';
+      setTimeout(() => {
+        textEl.textContent = chosenText;
+        textEl.style.opacity = '1';
+      }, 200);
+
+      // Взрыв сердечек из центра кнопки
+      const rect = btn.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+      createHearts(originX, originY);
+    });
+
+    function createHearts(originX, originY) {
+      const symbols = ['❤️', '💖', '✨', '🌸', '🥰', '💕'];
+      const total = 10;
+
+      for (let i = 0; i < total; i++) {
+        const span = document.createElement('span');
+        span.className = 'heart-particle';
+        span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+        const tx = (Math.random() - 0.5) * 220 + 'px';
+        const ty = -(Math.random() * 150 + 60) + 'px';
+        const rot = (Math.random() - 0.5) * 60 + 'deg';
+
+        span.style.setProperty('--tx', tx);
+        span.style.setProperty('--ty', ty);
+        span.style.setProperty('--rot', rot);
+        span.style.fontSize = (Math.random() * 14 + 18) + 'px';
+
+        span.style.left = originX + 'px';
+        span.style.top = originY + 'px';
+
+        document.body.appendChild(span);
+
+        setTimeout(() => span.remove(), 1200);
+      }
+    }
+  </script>
+</body>
+</html>
